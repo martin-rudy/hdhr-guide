@@ -1,0 +1,9 @@
+services:
+  hdhr-guide:
+    image: ghcr.io/wildium/hdhr-guide:latest
+    container_name: hdhr-guide
+    restart: unless-stopped
+    environment:
+      - HDHR_URL=${HDHR_URL}
+      - PORT=${HDHR_GUIDE_PORT:-9000}
+      - REFRESH_HOURS=${HDHR_GUIDE_REFRESH_HOURS:-12}
