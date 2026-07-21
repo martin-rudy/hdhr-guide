@@ -12,29 +12,48 @@ A lightweight Docker container that queries a [HDHomeRun](https://www.silicondus
 
 ## Quick Start
 
-### 1. Create your `.env` file
+### 1. Add the service to your Jellyfin `docker-compose.yml`
 
-```bash
-cp .env.example .env
+Add this service alongside your existing Jellyfin container:
+
+```yaml
+services:
+  # ... your existing jellyfin, sonarr, radarr, etc. ...
+
+  hdhr-guide:
+    image: ghcr.io/wildium/hdhr-guide:latest
+    container_name: hdhr-guide
+    restart: unless-stopped
+    environment:
+      - HDHR_URL=${HDHR_URL}
+      - PORT=${HDHR_GUIDE_PORT:-9000}
+      - REFRESH_HOURS=${HDHR_GUIDE_REFRESH_HOURS:-12}
 ```
 
-Edit `.env` and set your HDHomeRun URL:
+### 2. Set your `.env` variables
+
+Add these to your existing `.env` file (or create one next to your `docker-compose.yml`):
 
 ```ini
+# Required: your HDHomeRun tuner URL
 HDHR_URL=http://192.168.4.34/discover.json
+
+# Optional overrides
+# HDHR_GUIDE_PORT=9000
+# HDHR_GUIDE_REFRESH_HOURS=12
 ```
 
 > **Find your HDHomeRun URL:** Open `http://hdhomerun.local/discover.json` in a browser, or use the IP directly. The response will contain your `DeviceID` and `DeviceAuth`.
 
-### 2. Start the container
+### 3. Start it
 
 ```bash
-docker compose -f docker-compose-example.yml up -d
+docker compose up -d hdhr-guide
 ```
 
-The guide will be available at `http://localhost:9000/xmlguide.xmltv`.
+The guide is served at `http://hdhr-guide:9000/xmlguide.xmltv` — accessible to any container on the same Docker network.
 
-### 3. Configure Jellyfin
+### 4. Configure Jellyfin
 
 1. Go to **Dashboard → Live TV**
 2. Under **Guide Data Providers**, add a new provider of type **XmlTV**
@@ -42,9 +61,9 @@ The guide will be available at `http://localhost:9000/xmlguide.xmltv`.
    ```
    http://hdhr-guide:9000/xmlguide.xmltv
    ```
-   (If running outside Docker Compose, use the host IP instead of `hdhr-guide`)
-
 4. Click **Refresh Guide Data**
+
+> A standalone [`docker-compose-example.yml`](docker-compose-example.yml) is also included if you prefer to run it independently.
 
 ## Environment Variables
 
