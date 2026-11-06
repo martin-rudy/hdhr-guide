@@ -1,6 +1,6 @@
 services:
   hdhr-guide:
-    image: ghcr.io/wildium/hdhr-guide:latest
+    image: ghcr.io/martin-rudy/hdhr-guide:latest
     container_name: hdhr-guide
     restart: unless-stopped
     environment:
