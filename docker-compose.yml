@@ -1,7 +1,8 @@
 services:
   hdhr-guide:
-    image: ghcr.io/martin-rudy/hdhr-guide:latest
-    container_name: hdhr-guide
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     environment:
       - HDHR_URL=${HDHR_URL}
